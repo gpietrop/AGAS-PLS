@@ -2,6 +2,7 @@ library(readr)
 library(dplyr)
 library(here)
 
+# setwd("src")
 source("analysis_utils.R")
 
 # Define the specific matrices for different str values
@@ -50,7 +51,7 @@ process_folder <- function(name_folder, str_id,
                            print_examples = FALSE, num_examples = 3) {
   specific_matrix <- specific_matrices_list[[str_id]]
   run_suffix <- paste(effect_size, sample_size, sep = "_")
-  folder_path <- here("results", name_folder, str_id)
+  folder_path <- here("results_oct", name_folder, str_id)
   
   path <- file.path(folder_path, paste0(str_id, "_", run_suffix))
 
@@ -72,9 +73,9 @@ process_folder <- function(name_folder, str_id,
 }
 
 
-str_id <- "str1"
+str_id <- "str4"
 effect_size <- "high"
 sample_size <- "100"
 name_folder <- "200_100_TRUE"
-process_folder(name_folder, str_id, effect_size, sample_size, print_frequent = TRUE, print_examples = FALSE)
+process_folder(name_folder, str_id, effect_size, sample_size, print_frequent = FALSE, print_examples = FALSE)
 
