@@ -10,12 +10,12 @@ source("utils.R")
 # default hyperparameters
 option_list <- list(
   make_option(c("--modeDim"), type="integer", default=100, help="Sample size"),
-  make_option(c("--popSize"), type="integer", default=100, help="Population size"),
+  make_option(c("--popSize"), type="integer", default=200, help="Population size"),
   make_option(c("--maxiter"), type="integer", default=100, help="Maximum iterations"),
   make_option(c("--pmutation"), type="double", default=1.0, help="Mutation rate"),
   make_option(c("--pcrossover"), type="double", default=0.8, help="Crossover rate"),
   make_option(c("--seed_start"), type="integer", default=0, help="First seed for the GA"),
-  make_option(c("--seed_end"), type="integer", default=99, help="Last seed for the GA")
+  make_option(c("--seed_end"), type="integer", default=50, help="Last seed for the GA")
 )
 
 opt_parser <- OptionParser(option_list=option_list)
@@ -23,7 +23,7 @@ opt <- parse_args(opt_parser)
 
 
 # Define and create results directory
-hyperparam_subdir <- paste(opt$maxiter, opt$popSize, opt$treeRows, sep = "_")
+hyperparam_subdir <- paste(opt$maxiter, opt$popSize, sep = "_")
 results_dir <- file.path("..", "results", hyperparam_subdir, "satisfaction")
 model_subdir <- paste(opt$model, opt$modeDim, sep="_")
 subdir <- file.path(results_dir, model_subdir)
@@ -34,7 +34,7 @@ sat_matrix <- matrix(c(
   1, 0, 0, 0, 0, 0,  # EXPE dependencies
   0, 1, 0, 0, 0, 0,  # QUAL dependencies
   0, 1, 1, 0, 0, 0,  # VAL dependencies
-  1, 1, 1, 1, 0, 1,  # SAT dependencies
+  1, 1, 1, 1, 0, 0,  # SAT dependencies
   1, 0, 0, 0, 1, 0   # LOY dependencies
 ), nrow = 6, byrow = TRUE)
 
