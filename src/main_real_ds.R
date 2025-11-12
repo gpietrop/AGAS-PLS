@@ -1,7 +1,7 @@
 library(GA)
 library(optparse)
 
-setwd("src")
+# setwd("src")
 
 source("my_fitness_ecsi.R")
 source("ga_operators_ecsi.R")
