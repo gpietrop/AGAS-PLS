@@ -60,6 +60,9 @@ create_sem_model_string_from_matrix_satisfaction <- function(adj_matrix) {
   SAT  =~ sat1  + sat2  + sat3  + sat4
   LOY  =~ loy1  + loy2  + loy3  + loy4
   
+  # Measurement error correlation
+  sat1 ~~ sat2
+  
   # Structural model
   "
   
@@ -80,6 +83,48 @@ create_sem_model_string_from_matrix_satisfaction <- function(adj_matrix) {
   
   return(model_string)
 }
+
+
+create_sem_model_string_from_matrix_trans <- function(adj_matrix) {
+  # Define variable names corresponding to the rows and columns of the matrix
+  variables <- c("IMAG", "EXPE", "QUAL", "VAL", "SAT", "LOY", "COMP")
+  
+  # Start with the composite and measurement models (static part)
+  model_string <- "
+  # Composite model
+  IMAG <~ Image1 + Image2 + Image3 + Image4 + Image5 
+  EXPE <~ Expec1 + Expec2 + Expec3 
+  QUAL <~ PerQual1 + PerQual2 + PerQual3 + PerQual3 + PerQual5 + PerQual6 + PerQual7
+  VAL <~ PerVal1 + PerVal2
+  COMP <~ Compl
+  SAT<~ Satis1 + Satis2 + Satis3
+  LOY <~ Loyal1 + Loyal2 + Loyal3
+  
+  # Reflective measurement model
+  
+  # Measurement error correlation
+  
+  # Structural model
+  "
+  
+  # Iterate over each variable to define its dependencies based on the matrix
+  for (i in seq_along(variables)) {
+    dependent <- variables[i]
+    predictors <- variables[adj_matrix[i, ] == 1]
+    
+    if (length(predictors) > 0) {
+      model_string <- paste(model_string, sprintf("%s ~ %s\n  ", dependent, paste(predictors, collapse = " + ")), sep = "")
+    }
+  }
+  
+  # Ensure there are no leading '+' in the structural model lines and trim trailing spaces/new lines
+  model_string <- gsub("\\n  $", "", model_string)  # Remove trailing new line and spaces
+  model_string <- trimws(model_string)  # Remove any leading or trailing whitespace
+  # model_string <- paste0(model_string, "\"")
+  
+  return(model_string)
+}
+
 
 create_sem_model_string_from_matrix_small <- function(adj_matrix, variables, measurement_model, structural_coefficients, type_of_variable) {
   model_string <- ""

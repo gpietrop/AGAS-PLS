@@ -45,7 +45,7 @@ myMutationTreeRowZero <- function(object, parent) {
   
   mutate_vector <- as.vector(t(mutate_matrix))
   
-  # Create indices of lower triangular part (excluding diagonal) starting from row 4
+  # Create indices of all diagonal entries
   indices <- which(!diag(n_variables), arr.ind = TRUE)
   indices <- indices[indices[, 1] > 3, ]  # Exclude first three rows
   
@@ -113,3 +113,4 @@ myMutationSatisfaction <- function(object, parent) {
   }
   return(mutate_vector)
 }
+

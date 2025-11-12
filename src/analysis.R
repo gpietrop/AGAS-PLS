@@ -51,10 +51,12 @@ process_folder <- function(name_folder, str_id,
                            print_examples = FALSE, num_examples = 3) {
   specific_matrix <- specific_matrices_list[[str_id]]
   run_suffix <- paste(effect_size, sample_size, sep = "_")
-  folder_path <- here("results_oct", name_folder, str_id)
+  folder_path <- here("results", name_folder, str_id)
   
   path <- file.path(folder_path, paste0(str_id, "_", run_suffix))
-
+  
+  path <- file.path(folder_path, paste0(str_id, "_", run_suffix))
+  # path <- "/Users/gpietrop/Desktop/plsGP/results/100_200/satisfaction/_100/"
   # Check matrices against the specific matrix
   check <- check_matrices(path, specific_matrix, print_examples, num_examples)
   
@@ -73,9 +75,13 @@ process_folder <- function(name_folder, str_id,
 }
 
 
-str_id <- "str4"
-effect_size <- "high"
-sample_size <- "100"
+# str_id <- "satisfaction"
+# effect_size <- ""
+# sample_size <- "100"
+# name_folder <- "100_200" # "200_100_TRUE"
+str_id <- "str2"
+effect_size <- "small"
+sample_size <- "500"
 name_folder <- "200_100_TRUE"
 process_folder(name_folder, str_id, effect_size, sample_size, print_frequent = FALSE, print_examples = FALSE)
 
