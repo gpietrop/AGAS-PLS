@@ -29,7 +29,7 @@ myFitnessECSI <- function(matrix_vector) {
   
   model_string <- create_sem_model_string_from_matrix_trans(adj_matrix)
   dataTrans <- read.csv("ds/data_ecsi.csv", sep = ";")
-  out <- csem(.data = dataTrans,.model = model_string, .PLS_weight_scheme_inner = 'centroid')
+  out <- csem(.data = dataTrans,.model = model_string, .PLS_modes = 'modeA')
   ver = verify(out)
   if (!sum(ver) == 0) {
     return(-100000)  # Penalize configurations where any construct is unused

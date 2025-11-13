@@ -92,13 +92,13 @@ create_sem_model_string_from_matrix_trans <- function(adj_matrix) {
   # Start with the composite and measurement models (static part)
   model_string <- "
   # Composite model
-  IMAG <~ Image1 + Image2 + Image3 + Image4 + Image5 
-  EXPE <~ Expec1 + Expec2 + Expec3 
-  QUAL <~ PerQual1 + PerQual2 + PerQual3 + PerQual3 + PerQual5 + PerQual6 + PerQual7
-  VAL <~ PerVal1 + PerVal2
-  COMP <~ Compl
-  SAT<~ Satis1 + Satis2 + Satis3
-  LOY <~ Loyal1 + Loyal2 + Loyal3
+  IMAG =~ Image1 + Image2 + Image3 + Image4 + Image5 
+  EXPE =~ Expec1 + Expec2 + Expec3 
+  QUAL =~ PerQual1 + PerQual2 + PerQual3 + PerQual3 + PerQual5 + PerQual6 + PerQual7
+  VAL =~ PerVal1 + PerVal2
+  COMP =~ Compl
+  SAT =~ Satis1 + Satis2 + Satis3
+  LOY =~ Loyal1 + Loyal2 + Loyal3
   
   # Reflective measurement model
   

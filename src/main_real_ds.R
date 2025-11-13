@@ -12,8 +12,8 @@ variables <- c("eta1", "eta2", "eta3", "eta4", "eta5", "eta6", "eta7") # dir_nam
 # default hyperparameters
 option_list <- list(
   make_option(c("--modeDim"), type="integer", default=100, help="Sample size"),
-  make_option(c("--popSize"), type="integer", default=200, help="Population size"),
-  make_option(c("--maxiter"), type="integer", default=100, help="Maximum iterations"),
+  make_option(c("--popSize"), type="integer", default=500, help="Population size"),
+  make_option(c("--maxiter"), type="integer", default=500, help="Maximum iterations"),
   make_option(c("--pmutation"), type="double", default=1.0, help="Mutation rate"),
   make_option(c("--pcrossover"), type="double", default=0.8, help="Crossover rate"),
   make_option(c("--seed_start"), type="integer", default=0, help="First seed for the GA"),
@@ -60,7 +60,7 @@ trans_matrix <- matrix(c(
 dataTrans <- read.csv("ds/data_ecsi.csv", sep = ";")
 trans_string <- create_sem_model_string_from_matrix_trans(trans_matrix)
 # outTrans=csem(.data = dataTrans,.model = modelTrans,.PLS_modes = 'modeA',.PLS_weight_scheme_inner = 'path',.resample_method="bootstrap")
-outTrans=csem(.data = dataTrans,.model = trans_string,.PLS_modes = 'modeA',.PLS_weight_scheme_inner = 'centroid')
+outTrans=csem(.data = dataTrans,.model = trans_string,.PLS_modes = 'modeA')
 
 criteriaTrans <- calculateModelSelectionCriteria(outTrans, .by_equation = FALSE)
 bic_true <- criteriaTrans$BIC

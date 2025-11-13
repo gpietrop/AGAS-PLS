@@ -56,7 +56,7 @@ process_folder <- function(name_folder, str_id,
   path <- file.path(folder_path, paste0(str_id, "_", run_suffix))
   
   path <- file.path(folder_path, paste0(str_id, "_", run_suffix))
-  # path <- "/Users/gpietrop/Desktop/plsGP/results/100_200/satisfaction/_100/"
+  # path <- "/Users/gpietrop/Desktop/plsGP/results/500_500/ecsi/"
   # Check matrices against the specific matrix
   check <- check_matrices(path, specific_matrix, print_examples, num_examples)
   
@@ -78,10 +78,13 @@ process_folder <- function(name_folder, str_id,
 # str_id <- "satisfaction"
 # effect_size <- ""
 # sample_size <- "100"
-# name_folder <- "100_200" # "200_100_TRUE"
-str_id <- "str2"
-effect_size <- "small"
-sample_size <- "500"
-name_folder <- "200_100_TRUE"
+# name_folder <- "200_100" # "200_100_TRUE"
+str_id <- "str1"
+effect_size <- "high"
+sample_size <- "100"
+name_folder <- "50_50_TRUE"
 process_folder(name_folder, str_id, effect_size, sample_size, print_frequent = FALSE, print_examples = FALSE)
+path_plot = paste0("/Users/gpietrop/Desktop/plsGP/results/", name_folder, "/str1/str1_", effect_size, "_100")
+visualize_fitness_distribution(path_plot)
+visualize_time_distribution(path_plot)
 
