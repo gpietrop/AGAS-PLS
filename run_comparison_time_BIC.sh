@@ -8,7 +8,7 @@ conda activate plsGP
 models=("str1_high" "str1_small" "str1_med")
 dimensions=100
 pop=50
-eps=(50, 100, 200, 400)
+eps=(50 100 200 400)
 end=99
 
 MAX_JOBS=4
