@@ -11,16 +11,20 @@ pop=50
 eps=(50, 100, 200, 400)
 end=99
 
-# Run R scripts in parallel
+MAX_JOBS=4
+jobcount=0
+
 for model in "${models[@]}"; do
     for ep in "${eps[@]}"; do
-        echo "Running Rscript for model $model with modeDim $dim"
-        Rscript src/main.R --model=$model --modeDim=$dim --popSize=$pop --maxiter=$ep --seed_end=$end &
+        echo "Running Rscript for model $model with modeDim $dimensions, maxiter=$ep"
+        Rscript src/main.R --model="$model" --modeDim="$dimensions" --popSize="$pop" --maxiter="$ep" --seed_end="$end" &
+        ((jobcount++))
+        if (( jobcount % MAX_JOBS == 0 )); then
+            wait   # aspetta che finiscano i 4 in corso
+        fi
     done
 done
 
-# Wait for all background processes to finish
 wait
-
-echo "All tasks have been launched."
+echo "All tasks completed."
 
