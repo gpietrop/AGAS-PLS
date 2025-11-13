@@ -61,7 +61,7 @@ get_run_info <- function(folder_path, run_number) {
 
 
 visualize_fitness_distribution <- function(folder_path) {
-  hyper_file <- file.path(folder_path, "hyperparameters.csv")
+  hyper_file <- file.path(folder_path, "0_hyperparameters.csv")
   hyper_data <- read.csv(hyper_file)
   true_fitness <- hyper_data$True.AIC[1]
   
@@ -169,10 +169,10 @@ calculate_mean_matrix <- function(folder_path) {
   
   if (total_matrices == 0) {
     cat("No matrices found.\n")
-    return(matrix(0, nrow = 6, ncol = 6))
+    return(matrix(0, nrow = 7, ncol = 7))
   }
   
-  sum_matrix <- matrix(0, nrow = 6, ncol = 6)
+  sum_matrix <- matrix(0, nrow = 7, ncol = 7)
   
   for (file in best_files) {
     candidate_matrix <- as.matrix(read.csv(file, row.names = 1))

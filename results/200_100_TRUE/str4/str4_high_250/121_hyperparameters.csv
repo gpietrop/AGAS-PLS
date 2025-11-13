@@ -1,2 +1,2 @@
 Population.Size,Max.Iterations,Mutation.Rate,Crossover.Rate,True.BIC,TreeRows
-100,200,1,0.8,8051.05907276503,TRUE
+100,200,1,0.8,7725.05289469806,TRUE
