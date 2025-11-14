@@ -5,11 +5,11 @@ eval "$(conda shell.bash hook)"
 conda activate plsGP
 
 # Array of models and dimensions
-models=("str1_high" "str1_small" "str1_med")
+models=("str1_small" "str1_med")
 dimensions=100
 pop=50
 eps=(50 100 200 400)
-end=99
+end=29
 
 MAX_JOBS=4
 jobcount=0

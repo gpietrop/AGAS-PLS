@@ -16,7 +16,7 @@ option_list <- list(
   make_option(c("--maxiter"), type="integer", default=500, help="Maximum iterations"),
   make_option(c("--pmutation"), type="double", default=1.0, help="Mutation rate"),
   make_option(c("--pcrossover"), type="double", default=0.8, help="Crossover rate"),
-  make_option(c("--seed_start"), type="integer", default=0, help="First seed for the GA"),
+  make_option(c("--seed_start"), type="integer", default=6, help="First seed for the GA"),
   make_option(c("--seed_end"), type="integer", default=100, help="Last seed for the GA")
 )
 
