@@ -1,6 +1,47 @@
 source("utils.R")
 source("hyperparameters.R")
 
+# Define the specific matrices for different str values
+specific_matrices_list <- list(
+  str1 = matrix(
+    c(0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0,
+      1, 1, 1, 0, 0, 0,
+      0, 0, 0, 1, 0, 0,
+      0, 0, 0, 0, 1, 0),
+    nrow = 6, byrow = TRUE
+  ),
+  str2 = matrix(
+    c(0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0,
+      1, 1, 1, 0, 0, 0,
+      0, 0, 1, 1, 0, 0,
+      1, 0, 0, 0, 1, 0),
+    nrow = 6, byrow = TRUE
+  ),
+  str3 = matrix(
+    c(0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0,
+      1, 1, 1, 0, 0, 0,
+      0, 0, 0, 1, 0, 0,
+      1, 0, 1, 0, 1, 0),
+    nrow = 6, byrow = TRUE
+  ),
+  str4 = matrix(
+    c(0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0,
+      1, 1, 1, 0, 0, 0,
+      1, 1, 1, 1, 0, 0,
+      1, 1, 1, 1, 1, 0),
+    nrow = 6, byrow = TRUE
+  )
+)
+
+
 get_best_individual <- function(folder_path) {
   hyper_file <- file.path(folder_path, "hyperparameters.csv")
   hyper_data <- read.csv(hyper_file)
@@ -70,7 +111,10 @@ visualize_fitness_distribution <- function(folder_path) {
   
   for (file in fitness_files) {
     fitness_data <- read.csv(file)
-    all_fitness <- c(all_fitness, fitness_data$Fitness)
+    valid_values <- fitness_data$Fitness[
+      fitness_data$Fitness >= 0 & fitness_data$Fitness <= 1e4
+    ]
+    all_fitness <- c(all_fitness, valid_values)
   }
   
   ylim <- range(all_fitness, true_fitness)
@@ -207,36 +251,127 @@ check_matrices <- function(folder_path,
   # ===========================
   #        VERBOSE FALSE
   # ===========================
-  
+  cat("Number of samples:", total, "\n")
   cat("Success rate:", round(success_rate, 4), "\n")
   return(invisible(NULL))
 }
 
 
 
-calculate_mean_matrix <- function(folder_path) {
-  best_files <- list.files(path = folder_path, pattern = "*_best.csv", full.names = TRUE)
+calculate_mean_matrix <- function(folder_path, dimension) {
+  best_files <- list.files(path = folder_path, pattern = "_best\\.csv$", full.names = TRUE)
   
-  total_matrices <- length(best_files)
+  sum_matrix <- matrix(0, nrow = dimension, ncol = dimension)
+  used_count <- 0
   
-  if (total_matrices == 0) {
-    cat("No matrices found.\n")
-    return(matrix(0, nrow = 6, ncol = 6))
-  }
-  
-  sum_matrix <- matrix(0, nrow = 6, ncol = 6)
-  
-  for (file in best_files) {
-    candidate_matrix <- as.matrix(read.csv(file, row.names = 1))
+  for (best_file in best_files) {
+    
+    # 1) costruisci il nome del file fitness
+    fitness_file <- file.path(dirname(best_file),
+                              paste0(gsub("_best\\.csv$", "", basename(best_file)),
+                                     "_fitness.csv"))
+    
+    # 2) leggi il fitness come fai per hyperparameters
+    fitness_data <- read.csv(fitness_file)
+    fitness_value <- fitness_data$Fitness[1]
+
+        # 3) controlla threshold
+    if (fitness_value > 1e4) {
+      next
+    }
+    
+    if (fitness_value < 0) {
+      next
+    }
+    
+    # 4) usa la matrice
+    candidate_matrix <- as.matrix(read.csv(best_file, row.names = 1))
     sum_matrix <- sum_matrix + candidate_matrix
+    used_count <- used_count + 1
   }
   
-  cat("Mean of all the matrices generated: \n")
-  mean_matrix <- sum_matrix / total_matrices
-  print(round(mean_matrix, 2))
+  if (used_count == 0) {
+    cat("No matrices passed the threshold.\n")
+    return(matrix(0, nrow = dimension, ncol = dimension))
+  }
   
-  return
+  mean_matrix <- sum_matrix / used_count
+  # print(round(mean_matrix, 2))
+  cat("Number of samples:", used_count, "\n")
+  return(round(mean_matrix, 2))
 }
+
+find_top_matrices <- function(folder_path, k = 3, decreasing = FALSE) {
+  best_files <- list.files(
+    path = folder_path,
+    pattern = "_best\\.csv$",
+    full.names = TRUE
+  )
+  
+  if (length(best_files) == 0) {
+    cat("No best files found.\n")
+    return(NULL)
+  }
+  
+  matrices  <- list()
+  fitnesses <- numeric(0)
+  keys      <- character(0)
+  
+  for (best_file in best_files) {
+    # corresponding fitness file
+    fitness_file <- sub("_best\\.csv$", "_fitness.csv", best_file)
+    if (!file.exists(fitness_file)) {
+      next
+    }
+    
+    fitness_data  <- read.csv(fitness_file)
+    fitness_value <- fitness_data$Fitness[1]
+    
+    # fitness filter
+    if (is.na(fitness_value) || fitness_value < 0 || fitness_value > 1e4) {
+      next
+    }
+    
+    # read matrix
+    m <- as.matrix(read.csv(best_file, row.names = 1))
+    
+    # create a unique key for this matrix
+    key <- paste(c(m), collapse = ",")
+    
+    matrices[[length(matrices) + 1]] <- m
+    fitnesses <- c(fitnesses, fitness_value)
+    keys <- c(keys, key)
+  }
+  
+  if (length(matrices) == 0) {
+    cat("No matrices passed the fitness filter.\n")
+    return(NULL)
+  }
+  
+  # compute frequencies of identical matrices
+  freq <- table(keys)
+  
+  # sort by fitness
+  ord <- order(fitnesses, decreasing = decreasing)
+  
+  # retain only top k ranked by fitness
+  ord <- ord[seq_len(min(k, length(ord)))]
+  
+  result <- vector("list", length(ord))
+  for (i in seq_along(ord)) {
+    idx <- ord[i]
+    key_i <- keys[idx]
+    result[[i]] <- list(
+      matrix  = matrices[[idx]],
+      fitness = fitnesses[idx],
+      count   = as.integer(freq[key_i])   # how many times this matrix appears
+    )
+  }
+  
+  names(result) <- paste0("top_", seq_along(result))
+  return(result)
+}
+
 
 find_top_5_frequent_matrices <- function(folder_path) {
   variables <- c("eta1", "eta2", "eta3", "eta4", "eta5", "eta6") 

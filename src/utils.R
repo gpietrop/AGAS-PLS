@@ -126,23 +126,45 @@ create_sem_model_string_from_matrix_trans <- function(adj_matrix) {
 }
 
 
-create_sem_model_string_from_matrix_small <- function(adj_matrix, variables, measurement_model, structural_coefficients, type_of_variable) {
-  model_string <- ""
+create_sem_model_string_from_matrix_tam <- function(adj_matrix) {
+  # Define variable names corresponding to the rows and columns of the matrix
+  variables <- c("EOI", "USEF", "ATT", "BI", "USE")
   
+  # Start with the composite and measurement models (static part)
+  model_string <- "
+  # Composite model
+  EOI <~ EOU1 + EOU2 + EOU3 + EOU4 + EOU5
+  USEF <~ USEF1 + USEF2 + USEF3 + USEF4 + USEF5
+  BI <~ BI1 + BI2 +  BI3   
+  ATT <~ ATT1 + ATT2 + ATT3 + ATT4 + ATT5
+  USE <~ USE1 + USE2 + USE3 + USE4 
+  
+  # Reflective measurement model
+  
+  # Measurement error correlation
+  
+  # Structural model
+  "
+  
+  # Iterate over each variable to define its dependencies based on the matrix
   for (i in seq_along(variables)) {
     dependent <- variables[i]
     predictors <- variables[adj_matrix[i, ] == 1]
     
     if (length(predictors) > 0) {
-      relationship_str <- paste(predictors, collapse = " + ")
-      model_string <- paste(model_string, sprintf("  %s ~ %s\n", dependent, relationship_str), sep = "")
+      model_string <- paste(model_string, sprintf("%s ~ %s\n  ", dependent, paste(predictors, collapse = " + ")), sep = "")
     }
   }
-  model_string <- gsub("\\n\\s+$", "", model_string)  
-  model_string <- trimws(model_string)  
+  
+  # Ensure there are no leading '+' in the structural model lines and trim trailing spaces/new lines
+  model_string <- gsub("\\n  $", "", model_string)  # Remove trailing new line and spaces
+  model_string <- trimws(model_string)  # Remove any leading or trailing whitespace
+  # model_string <- paste0(model_string, "\"")
   
   return(model_string)
 }
+
+
 
 update_p_value_file <- function(file_name, p_name, p_val) {
   # Read the existing file
