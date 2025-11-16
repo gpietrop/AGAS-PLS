@@ -164,6 +164,43 @@ create_sem_model_string_from_matrix_tam <- function(adj_matrix) {
   return(model_string)
 }
 
+create_sem_model_string_from_matrix_ova <- function(adj_matrix) {
+  # Define variable names corresponding to the rows and columns of the matrix
+  variables <- c("OP", "OI", "ACJ", "ACL")
+  
+  # Start with the composite and measurement models (static part)
+  model_string <- "
+  # Composite model
+  OP <~ org_pre1 + org_pre2 + org_pre3 + org_pre4 + org_pre5 + org_pre6 +  org_pre7 + org_pre8 
+  OI <~ org_ident1 + org_ident2 + org_ident3 + org_ident4 + org_ident5 + org_ident6
+  ACJ <~ ac_joy1 + ac_joy2 + ac_joy3 + ac_joy4
+  ACL <~ ac_love1 + ac_love2 + ac_love3
+  
+  # Reflective measurement model
+  
+  # Measurement error correlation
+  
+  # Structural model
+  "
+  
+  # Iterate over each variable to define its dependencies based on the matrix
+  for (i in seq_along(variables)) {
+    dependent <- variables[i]
+    predictors <- variables[adj_matrix[i, ] == 1]
+    
+    if (length(predictors) > 0) {
+      model_string <- paste(model_string, sprintf("%s ~ %s\n  ", dependent, paste(predictors, collapse = " + ")), sep = "")
+    }
+  }
+  
+  # Ensure there are no leading '+' in the structural model lines and trim trailing spaces/new lines
+  model_string <- gsub("\\n  $", "", model_string)  # Remove trailing new line and spaces
+  model_string <- trimws(model_string)  # Remove any leading or trailing whitespace
+  # model_string <- paste0(model_string, "\"")
+  
+  return(model_string)
+}
+
 
 
 update_p_value_file <- function(file_name, p_name, p_val) {

@@ -3,11 +3,11 @@ library(optparse)
 
 # setwd("src")
 
-source("my_fitness_tam.R")
-source("ga_operators_tam.R")
+source("my_fitness_ova.R")
+source("ga_operators_ova.R")
 source("utils.R")
 
-variables <- c("eta1", "eta2", "eta3", "eta4", "eta5") # dir_names in the other script
+variables <- c("eta1", "eta2", "eta3", "eta4") # dir_names in the other script
 
 # default hyperparameters
 option_list <- list(
@@ -26,39 +26,36 @@ opt <- parse_args(opt_parser)
 
 # Define and create results directory
 hyperparam_subdir <- paste(opt$maxiter, opt$popSize, sep = "_")
-results_dir <- file.path("..", "results", hyperparam_subdir, "tam")
+results_dir <- file.path("..", "results", hyperparam_subdir, "ova")
 dir.create(results_dir, recursive = TRUE, showWarnings = FALSE)
 
 
-modelTAM='  
+modelOI='  
 # strucutral model
-  USEF ~ EOI
-  ATT ~ EOI + USEF
-  BI ~ ATT + USEF
-  USE ~ BI + ATT
+  OI ~ OP
+  ACJ ~ OI
+  ACL ~ OI
 # outer model - composites
-  EOI <~ EOU1 + EOU2 + EOU3 + EOU4 + EOU5
-  USEF <~ USEF1 + USEF2 + USEF3 + USEF4 + USEF5
-  BI <~ BI1 + BI2 +  BI3   
-  ATT <~ ATT1 + ATT2 + ATT3 + ATT4 + ATT5
-  USE <~ USE1 + USE2 + USE3 + USE4 
+  OP <~ org_pre1 + org_pre2 + org_pre3 + org_pre4 + org_pre5 + org_pre6 +  org_pre7 + org_pre8 
+  OI <~ org_ident1 + org_ident2 + org_ident3 + org_ident4 + org_ident5 + org_ident6
+  ACJ <~ ac_joy1 + ac_joy2 + ac_joy3 + ac_joy4
+  ACL <~ ac_love1 + ac_love2 + ac_love3
 '
 
-tam_matrix <- matrix(c(
-    0, 0, 0, 0, 0,  # EOI dependencies
-    1, 0, 0, 0, 0,  # USEF dependencies
-    1, 1, 0, 0, 0,  # ATT dependencies
-    0, 1, 1, 0, 0,  # BI dependencies
-    0, 0, 1, 1, 0   # USE dependencies
-  ), nrow = 5, byrow = TRUE)
+ova_matrix <- matrix(c(
+    0, 0, 0, 0,  # OP dependencies
+    1, 0, 0, 0,  # OI dependencies
+    0, 1, 0, 0,  # ACJ dependencies
+    0, 1, 0, 0   # ACL dependencies
+  ), nrow = 4, byrow = TRUE)
   
-dati_TAM <-  read.csv("ds/Data_TAM.txt", sep=";", stringsAsFactors=TRUE)
-tam_string <- create_sem_model_string_from_matrix_tam(tam_matrix)
+dati_OVA <-  read.csv("ds/Data_OIvariations.txt", sep=";", stringsAsFactors=TRUE)
+ova_string <- create_sem_model_string_from_matrix_ova(ova_matrix)
 
-outTAM=csem(.data = dati_TAM,.model = modelTAM,.PLS_modes = 'modeA')
-outTam=csem(.data = dati_TAM,.model = tam_string,.PLS_modes = 'modeA')
+outTAM=csem(.data = dati_OVA,.model = modelOI,.PLS_modes = 'modeA')
+outTam=csem(.data = dati_OVA,.model = ova_string,.PLS_modes = 'modeA')
 
-criteriaTam <- calculateModelSelectionCriteria(outTam, .by_equation = FALSE)
+criteriaTam <- calculateModelSelectionCriteria(outTAM, .by_equation = FALSE)
 bic_true <- criteriaTam$BIC
 
 # GA function
@@ -82,12 +79,12 @@ run_ga <- function(seed) {
   # Time the GA execution
   ga_time <- system.time({
     
-    fitness_function <- myFitnessTAM
-    mutation_function <- myMutationTAM
+    fitness_function <- myFitnessOVA
+    mutation_function <- myMutationOVA
     
     ga_control <- ga(
       type = "binary",
-      nBits = 5 * 5,
+      nBits = 4 * 4,
       popSize = opt$popSize,
       maxiter = opt$maxiter,
       pmutation = opt$pmutation,

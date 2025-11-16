@@ -276,7 +276,7 @@ calculate_mean_matrix <- function(folder_path, dimension) {
     fitness_value <- fitness_data$Fitness[1]
 
         # 3) controlla threshold
-    if (fitness_value > 1e4) {
+    if (fitness_value >= 1e5) {
       next
     }
     
