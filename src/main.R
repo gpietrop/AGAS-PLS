@@ -13,8 +13,8 @@ source("utils.R")
 option_list <- list(
   make_option(c("--model"), default="str1_high", help="Model to use"),
   make_option(c("--modeDim"), type="integer", default=100, help="Sample size"),
-  make_option(c("--popSize"), type="integer", default=100, help="Population size"),
-  make_option(c("--maxiter"), type="integer", default=100, help="Maximum iterations"),
+  make_option(c("--popSize"), type="integer", default=50, help="Population size"),
+  make_option(c("--maxiter"), type="integer", default=50, help="Maximum iterations"),
   make_option(c("--pmutation"), type="double", default=1.0, help="Mutation rate"),
   make_option(c("--pcrossover"), type="double", default=0.8, help="Crossover rate"),
   make_option(c("--seed_start"), type="integer", default=0, help="First seed for the GA"),
@@ -41,7 +41,7 @@ result_dir_str <- model_key
 
 # Define and create results directory
 hyperparam_subdir <- paste(opt$maxiter, opt$popSize, opt$treeRows, sep = "_")
-results_dir <- file.path("..", "results", hyperparam_subdir, result_dir_str)
+results_dir <- file.path("..", "results_speed", hyperparam_subdir, result_dir_str)
 model_subdir <- paste(opt$model, opt$modeDim, sep="_")
 subdir <- file.path(results_dir, model_subdir)
 dir.create(subdir, recursive = TRUE, showWarnings = FALSE)
