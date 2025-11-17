@@ -122,8 +122,6 @@ run_ga <- function(seed) {
   write.csv(data.frame(Fitness = - ga_control@fitnessValue), file.path(results_dir, paste0(seed, "_fitness", ".csv")), row.names = FALSE)
 }
 
-print(bic_true)
-
 # Loop over a range of seeds
 lapply(opt$seed_start:opt$seed_end, run_ga)
 
