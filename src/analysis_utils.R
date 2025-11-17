@@ -102,7 +102,7 @@ get_run_info <- function(folder_path, run_number) {
 
 
 visualize_fitness_distribution <- function(folder_path) {
-  hyper_file <- file.path(folder_path, "0_hyperparameters.csv")
+  hyper_file <- file.path(folder_path, "1_hyperparameters.csv")
   hyper_data <- read.csv(hyper_file)
   true_fitness <- hyper_data$True.BIC[1]
   
@@ -111,9 +111,10 @@ visualize_fitness_distribution <- function(folder_path) {
   
   for (file in fitness_files) {
     fitness_data <- read.csv(file)
-    valid_values <- fitness_data$Fitness[
-      fitness_data$Fitness >= 0 & fitness_data$Fitness <= 1e4
-    ]
+    valid_values <- fitness_data$Fitness
+    #[
+    #  fitness_data$Fitness >= 0 & fitness_data$Fitness <= 1e4
+    #]
     all_fitness <- c(all_fitness, valid_values)
   }
   
@@ -134,6 +135,7 @@ visualize_time_distribution <- function(folder_path) {
   
   ylim <- range(all_fitness)
   boxplot(all_fitness, main = "Time Distribution Across All Runs", ylab = "Time")
+  cat("Median computation time:", median(all_fitness), "\n")
 }
 
 
@@ -275,14 +277,14 @@ calculate_mean_matrix <- function(folder_path, dimension) {
     fitness_data <- read.csv(fitness_file)
     fitness_value <- fitness_data$Fitness[1]
 
-        # 3) controlla threshold
-    if (fitness_value >= 1e5) {
-      next
-    }
+    # 3) controlla threshold
+    # if (fitness_value >= 1e3) {
+    #   next
+    # }
     
-    if (fitness_value < 0) {
-      next
-    }
+    # if (fitness_value < 0) {
+    #   next
+    # }
     
     # 4) usa la matrice
     candidate_matrix <- as.matrix(read.csv(best_file, row.names = 1))
@@ -328,9 +330,9 @@ find_top_matrices <- function(folder_path, k = 3, decreasing = FALSE) {
     fitness_value <- fitness_data$Fitness[1]
     
     # fitness filter
-    if (is.na(fitness_value) || fitness_value < 0 || fitness_value > 1e4) {
-      next
-    }
+    # if (is.na(fitness_value) || fitness_value < 0 || fitness_value > 1e3) {
+    #  next
+    # }
     
     # read matrix
     m <- as.matrix(read.csv(best_file, row.names = 1))

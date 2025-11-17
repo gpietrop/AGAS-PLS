@@ -50,7 +50,6 @@ tam_matrix <- matrix(c(
   0, 0, 1, 1, 0   # USE dependencies
 ), nrow = 5, byrow = TRUE)
 
-
 gen_tam_matrix <- matrix(c(
   0, 0, 0, 0, 0,  # EOI dependencies
   1, 0, 1, 1, 0,  # USEF dependencies
@@ -71,12 +70,27 @@ modelTAM_gen='
   USE <~ USE1 + USE2 + USE3 + USE4 
 '
 
+ova_matrix <- matrix(c(
+  0, 0, 0, 0,  # OP dependencies
+  1, 0, 0, 0,  # OI dependencies
+  0, 1, 0, 0,  # ACJ dependencies
+  0, 1, 0, 0   # ACL dependencies
+), nrow = 4, byrow = TRUE)
+
+gen_ova_matrix <- matrix(c(
+  0, 0, 0, 0,  # OP dependencies
+  0, 0, 0, 0,  # OI dependencies
+  1, 1, 0, 0,  # ACJ dependencies
+  0, 1, 1, 0   # ACL dependencies
+), nrow = 4, byrow = TRUE)
+
 data <- read.csv("ds/data_ecsi.csv", sep = ";")
 dati_TAM <-  read.csv("ds/Data_TAM.txt", sep=";", stringsAsFactors=TRUE)
+dati_OVA <-  read.csv("ds/Data_OIvariations.txt", sep=";", stringsAsFactors=TRUE)
 
 sat_string <- create_sem_model_string_from_matrix_tam(gen_tam_matrix)
 # print(sat_string)
-sat_out <- csem(.data = dati_TAM,.model = modelTAM_gen, .PLS_modes = 'modeA')
+sat_out <- csem(.data = dati_TAM,.model = sat_string, .PLS_modes = 'modeA')
 sat_criteria <- calculateModelSelectionCriteria(sat_out, .by_equation = FALSE)
 bic_true <- sat_criteria$BIC
 print(bic_true)
