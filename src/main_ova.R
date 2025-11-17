@@ -1,5 +1,6 @@
 library(GA)
 library(optparse)
+library(rsample)
 
 # setwd("src")
 
@@ -7,13 +8,15 @@ source("my_fitness_ova.R")
 source("ga_operators_ova.R")
 source("utils.R")
 
+
 variables <- c("eta1", "eta2", "eta3", "eta4") # dir_names in the other script
+set.seed(123) 
 
 # default hyperparameters
 option_list <- list(
   make_option(c("--modeDim"), type="integer", default=100, help="Sample size"),
   make_option(c("--popSize"), type="integer", default=100, help="Population size"),
-  make_option(c("--maxiter"), type="integer", default=100, help="Maximum iterations"),
+  make_option(c("--maxiter"), type="integer", default=200, help="Maximum iterations"),
   make_option(c("--pmutation"), type="double", default=1.0, help="Mutation rate"),
   make_option(c("--pcrossover"), type="double", default=0.8, help="Crossover rate"),
   make_option(c("--seed_start"), type="integer", default=1, help="First seed for the GA"),
@@ -50,13 +53,10 @@ ova_matrix <- matrix(c(
   ), nrow = 4, byrow = TRUE)
   
 dati_OVA <-  read.csv("ds/Data_OIvariations.txt", sep=";", stringsAsFactors=TRUE)
+
 ova_string <- create_sem_model_string_from_matrix_ova(ova_matrix)
+list_boost <- bootstraps(dati_OVA, 100, apparent = TRUE)  
 
-outTAM=csem(.data = dati_OVA,.model = modelOI,.PLS_modes = 'modeA')
-outTam=csem(.data = dati_OVA,.model = ova_string,.PLS_modes = 'modeA')
-
-criteriaTam <- calculateModelSelectionCriteria(outTAM, .by_equation = FALSE)
-bic_true <- criteriaTam$BIC
 
 # GA function
 run_ga <- function(seed) {
@@ -65,6 +65,16 @@ run_ga <- function(seed) {
   best_individual <<- NULL
   best_fitness <<- -Inf
   
+  # dataset 
+  split_seed <- list_boost$splits[[seed]]
+  dati_boot <- analysis(split_seed)
+  dati_boot <- as.data.frame(dati_boot)
+  
+  # compute true bic 
+  outOVA=csem(.data = dati_boot,.model = ova_string,.PLS_modes = 'modeA')
+  criteriaOVA <- calculateModelSelectionCriteria(outOVA, .by_equation = FALSE)
+  bic_true <- criteriaOVA$BIC
+  print(bic_true)
   
   # Save the specific of the run
   hyperparams <- data.frame(
@@ -89,7 +99,7 @@ run_ga <- function(seed) {
       maxiter = opt$maxiter,
       pmutation = opt$pmutation,
       pcrossover = opt$pcrossover,
-      fitness = function(x) fitness_function(x),
+      fitness = function(x) fitness_function(x, dati_boot),
       elitism = TRUE,
       parallel = FALSE,
       seed = seed,

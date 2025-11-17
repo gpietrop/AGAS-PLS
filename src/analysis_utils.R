@@ -101,28 +101,111 @@ get_run_info <- function(folder_path, run_number) {
 }
 
 
-visualize_fitness_distribution <- function(folder_path) {
-  hyper_file <- file.path(folder_path, "1_hyperparameters.csv")
-  hyper_data <- read.csv(hyper_file)
-  true_fitness <- hyper_data$True.BIC[1]
+visualize_fitness_difference <- function(folder_path) {
+  # Get all fitness files: e.g., 0_fitness.csv, 1_fitness.csv, ...
+  fitness_files <- list.files(path = folder_path,
+                              pattern = "_fitness\\.csv$",
+                              full.names = TRUE)
   
-  fitness_files <- list.files(path = folder_path, pattern = "*_fitness.csv", full.names = TRUE)
-  all_fitness <- c()
+  all_diff <- c()
   
-  for (file in fitness_files) {
-    fitness_data <- read.csv(file)
-    valid_values <- fitness_data$Fitness
-    #[
-    #  fitness_data$Fitness >= 0 & fitness_data$Fitness <= 1e4
-    #]
-    all_fitness <- c(all_fitness, valid_values)
+  for (fit_file in fitness_files) {
+    # Extract run id from filename (before the first "_")
+    base <- basename(fit_file)                # "0_fitness.csv"
+    run_id <- strsplit(base, "_")[[1]][1]     # "0"
+    
+    # Build corresponding hyperparameters filename
+    hyper_file <- file.path(folder_path, paste0(run_id, "_hyperparameters.csv"))
+    if (!file.exists(hyper_file)) {
+      warning("Hyperparameters file not found for run: ", run_id)
+      next
+    }
+    
+    # Read true fitness for this run
+    hyper_data <- read.csv(hyper_file)
+    true_fitness <- hyper_data$True.BIC[1]    # or True.AIC if that's the correct column
+    
+    # Read obtained fitness for this run
+    fitness_data <- read.csv(fit_file)
+    found_fitness <- fitness_data$Fitness
+    # Optional filter, if needed:
+    # found_fitness <- found_fitness[found_fitness >= 0 & found_fitness <= 1e4]
+    
+    # Difference: found - true (change sign if you prefer true - found)
+    diff_values <- found_fitness - true_fitness
+    
+    all_diff <- c(all_diff, diff_values)
   }
   
-  ylim <- range(all_fitness, true_fitness)
-  boxplot(all_fitness, main = "Fitness Distribution Across All Runs", ylab = "Fitness", ylim = ylim)
-  abline(h = true_fitness, col = "red", lty = 2)
-  legend("topright", legend = c("True AIC"), col = "red", lty = 2)
+  if (length(all_diff) == 0) {
+    warning("No fitness differences to plot.")
+    return(invisible(NULL))
+  }
+  
+  ylim <- range(all_diff, 0)
+  boxplot(all_diff,
+          main = "Difference Between Found and True Fitness Across Runs",
+          ylab = "Found fitness - True fitness",
+          ylim = ylim)
+  abline(h = 0, col = "red", lty = 2)
+  legend("topright",
+         legend = c("No difference (0)"),
+         col = "red", lty = 2)
 }
+
+
+visualize_fitness_difference <- function(folder_path) {
+  # Get all fitness files: e.g., 0_fitness.csv, 1_fitness.csv, ...
+  fitness_files <- list.files(path = folder_path,
+                              pattern = "_fitness\\.csv$",
+                              full.names = TRUE)
+  
+  all_diff <- c()
+  
+  for (fit_file in fitness_files) {
+    # Extract run id from filename (before the first "_")
+    base <- basename(fit_file)                # "0_fitness.csv"
+    run_id <- strsplit(base, "_")[[1]][1]     # "0"
+    
+    # Build corresponding hyperparameters filename
+    hyper_file <- file.path(folder_path, paste0(run_id, "_hyperparameters.csv"))
+    if (!file.exists(hyper_file)) {
+      warning("Hyperparameters file not found for run: ", run_id)
+      next
+    }
+    
+    # Read true fitness for this run
+    hyper_data <- read.csv(hyper_file)
+    true_fitness <- hyper_data$True.BIC[1]    # or True.AIC if that's the correct column
+    
+    # Read obtained fitness for this run
+    fitness_data <- read.csv(fit_file)
+    found_fitness <- fitness_data$Fitness
+    # Optional filter, if needed:
+    # found_fitness <- found_fitness[found_fitness >= 0 & found_fitness <= 1e4]
+    
+    # Difference: found - true (change sign if you prefer true - found)
+    diff_values <- found_fitness - true_fitness
+    
+    all_diff <- c(all_diff, diff_values)
+  }
+  
+  if (length(all_diff) == 0) {
+    warning("No fitness differences to plot.")
+    return(invisible(NULL))
+  }
+  
+  ylim <- range(all_diff, 0)
+  boxplot(all_diff,
+          main = "Difference Between Found and True Fitness Across Runs",
+          ylab = "Found fitness - True fitness",
+          ylim = ylim)
+  abline(h = 0, col = "red", lty = 2)
+  legend("topright",
+         legend = c("No difference (0)"),
+         col = "red", lty = 2)
+}
+
 
 visualize_time_distribution <- function(folder_path) {
   fitness_files <- list.files(path = folder_path, pattern = "*_time.csv", full.names = TRUE)

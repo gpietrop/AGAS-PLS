@@ -11,7 +11,7 @@ best_individual <<- NULL
 best_fitness <<- -Inf
 
 
-myFitnessOVA <- function(matrix_vector) {
+myFitnessOVA <- function(matrix_vector, data_boost) {
   n_variables <- 4
   if (is.matrix(matrix_vector)) {
     adj_matrix <- matrix_vector
@@ -36,8 +36,7 @@ myFitnessOVA <- function(matrix_vector) {
   } 
   
   model_string <- create_sem_model_string_from_matrix_ova(adj_matrix)
-  dati_OVA <-  read.csv("ds/Data_OIvariations.txt", sep=";", stringsAsFactors=TRUE)
-  out <- csem(.data = dati_OVA,.model = model_string, .PLS_modes = 'modeA')
+  out <- csem(.data = data_boost,.model = model_string, .PLS_modes = 'modeA')
   ver = verify(out)
   if (!sum(ver) == 0) {
     return(-100000)  # Penalize configurations where any construct is unused

@@ -248,6 +248,19 @@ has_cycle_matrix <- function(adj) {
   FALSE
 }
 
+has_cycle_dfs <- function(graph, adj_matrix) {
+  visited <- rep(FALSE, vcount(graph))
+  recStack <- rep(FALSE, vcount(graph))
+  
+  for (v in 1:vcount(graph)) {
+    if (!visited[v]) {
+      if (dfs_util(graph, v, visited, recStack, adj_matrix)) {
+        return(TRUE)
+      }
+    }
+  }
+  return(FALSE)
+}
 
 dfs_util <- function(graph, v, visited, recStack, adj_matrix) {
   visited[v] <- TRUE
