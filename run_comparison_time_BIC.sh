@@ -11,7 +11,7 @@ pop=50
 eps=(50 100 200 400)
 end=29
 
-MAX_JOBS=4
+MAX_JOBS=30
 jobcount=0
 
 for model in "${models[@]}"; do

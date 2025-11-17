@@ -1,6 +1,3 @@
-library(igraph)
-
-
 create_sem_model_string_from_matrix <- function(adj_matrix, variables, measurement_model, structural_coefficients, type_of_variable) {
   # Initialize the model string
   model_string <- "# Composite model\n"
@@ -222,19 +219,35 @@ update_p_value_file <- function(file_name, p_name, p_val) {
 }
 
 
-has_cycle_dfs <- function(graph, adj_matrix) {
-  visited <- rep(FALSE, vcount(graph))
-  recStack <- rep(FALSE, vcount(graph))
+has_cycle_matrix <- function(adj) {
+  n <- nrow(adj)
+  # 0 = unvisited, 1 = visiting, 2 = done
+  state <- integer(n)
   
-  for (v in 1:vcount(graph)) {
-    if (!visited[v]) {
-      if (dfs_util(graph, v, visited, recStack, adj_matrix)) {
-        return(TRUE)
-      }
+  dfs <- function(u) {
+    if (state[u] == 1) return(TRUE)   # back-edge → cycle
+    if (state[u] == 2) return(FALSE)  # already processed, no cycle here
+    
+    state[u] <<- 1  # mark as visiting
+    
+    neighbors <- which(adj[u, ] != 0)
+    for (v in neighbors) {
+      if (dfs(v)) return(TRUE)
+    }
+    
+    state[u] <<- 2  # done
+    FALSE
+  }
+  
+  for (i in seq_len(n)) {
+    if (state[i] == 0 && dfs(i)) {
+      return(TRUE)
     }
   }
-  return(FALSE)
+  
+  FALSE
 }
+
 
 dfs_util <- function(graph, v, visited, recStack, adj_matrix) {
   visited[v] <- TRUE
