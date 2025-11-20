@@ -1,6 +1,5 @@
 library(GA)
 library(optparse)
-library(rsample)
 
 # setwd("src")
 
@@ -10,7 +9,6 @@ source("utils.R")
 
 
 variables <- c("eta1", "eta2", "eta3", "eta4") # dir_names in the other script
-set.seed(123) 
 
 # default hyperparameters
 option_list <- list(
@@ -20,8 +18,10 @@ option_list <- list(
   make_option(c("--pmutation"), type="double", default=1.0, help="Mutation rate"),
   make_option(c("--pcrossover"), type="double", default=0.8, help="Crossover rate"),
   make_option(c("--seed_start"), type="integer", default=1, help="First seed for the GA"),
+  make_option(c("--gender"), type="integer", default=2, help="Gender"),
   make_option(c("--seed_end"), type="integer", default=100, help="Last seed for the GA")
 )
+
 
 opt_parser <- OptionParser(option_list=option_list)
 opt <- parse_args(opt_parser)
@@ -29,7 +29,7 @@ opt <- parse_args(opt_parser)
 
 # Define and create results directory
 hyperparam_subdir <- paste(opt$maxiter, opt$popSize, sep = "_")
-results_dir <- file.path("..", "results", hyperparam_subdir, "ova")
+results_dir <- file.path("..", "results", hyperparam_subdir, paste("ova", opt$gender, sep='_'))
 dir.create(results_dir, recursive = TRUE, showWarnings = FALSE)
 
 
@@ -51,30 +51,28 @@ ova_matrix <- matrix(c(
     0, 1, 0, 0,  # ACJ dependencies
     0, 1, 0, 0   # ACL dependencies
   ), nrow = 4, byrow = TRUE)
-  
+
+
 dati_OVA <-  read.csv("ds/Data_OIvariations.txt", sep=";", stringsAsFactors=TRUE)
-
 ova_string <- create_sem_model_string_from_matrix_ova(ova_matrix)
-list_boost <- bootstraps(dati_OVA, 100, apparent = TRUE)  
 
+dati_OVA <- subset(dati_OVA, gender == opt$gender)
+
+outOva=csem(.data = dati_OVA,.model = ova_string,.PLS_modes = 'modeA')
+
+criteriaOva <- calculateModelSelectionCriteria(outOva, .by_equation = FALSE)
+bic_true <- criteriaOva$BIC
+
+# compute true bic 
+print(bic_true)
 
 # GA function
 run_ga <- function(seed) {
   message("Running GA for seed: ", seed)
+  set.seed(seed+1) 
   best_individuals_all <<- list()
   best_individual <<- NULL
   best_fitness <<- -Inf
-  
-  # dataset 
-  split_seed <- list_boost$splits[[seed]]
-  dati_boot <- analysis(split_seed)
-  dati_boot <- as.data.frame(dati_boot)
-  
-  # compute true bic 
-  outOVA=csem(.data = dati_boot,.model = ova_string,.PLS_modes = 'modeA')
-  criteriaOVA <- calculateModelSelectionCriteria(outOVA, .by_equation = FALSE)
-  bic_true <- criteriaOVA$BIC
-  print(bic_true)
   
   # Save the specific of the run
   hyperparams <- data.frame(
@@ -99,7 +97,7 @@ run_ga <- function(seed) {
       maxiter = opt$maxiter,
       pmutation = opt$pmutation,
       pcrossover = opt$pcrossover,
-      fitness = function(x) fitness_function(x, dati_boot),
+      fitness = function(x) fitness_function(x, dati_OVA),
       elitism = TRUE,
       parallel = FALSE,
       seed = seed,
