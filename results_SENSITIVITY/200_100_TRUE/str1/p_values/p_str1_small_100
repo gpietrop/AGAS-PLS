@@ -1,31 +1,31 @@
-Connection
-eta2 ~ eta1
-eta3 ~ eta1
-eta4 ~ eta1
-eta5 ~ eta1
-eta6 ~ eta1
-eta1 ~ eta2
-eta3 ~ eta2
-eta4 ~ eta2
-eta5 ~ eta2
-eta6 ~ eta2
-eta1 ~ eta3
-eta2 ~ eta3
-eta4 ~ eta3
-eta5 ~ eta3
-eta6 ~ eta3
-eta1 ~ eta4
-eta2 ~ eta4
-eta3 ~ eta4
-eta5 ~ eta4
-eta6 ~ eta4
-eta1 ~ eta5
-eta2 ~ eta5
-eta3 ~ eta5
-eta4 ~ eta5
-eta6 ~ eta5
-eta1 ~ eta6
-eta2 ~ eta6
-eta3 ~ eta6
-eta4 ~ eta6
-eta5 ~ eta6
+Connection	Run1
+eta2 ~ eta1	NA
+eta3 ~ eta1	NA
+eta4 ~ eta1	0
+eta5 ~ eta1	NA
+eta6 ~ eta1	NA
+eta1 ~ eta2	NA
+eta3 ~ eta2	NA
+eta4 ~ eta2	0.0641
+eta5 ~ eta2	NA
+eta6 ~ eta2	0.3062
+eta1 ~ eta3	NA
+eta2 ~ eta3	NA
+eta4 ~ eta3	0.0011
+eta5 ~ eta3	0.2591
+eta6 ~ eta3	NA
+eta1 ~ eta4	NA
+eta2 ~ eta4	NA
+eta3 ~ eta4	NA
+eta5 ~ eta4	3e-04
+eta6 ~ eta4	NA
+eta1 ~ eta5	NA
+eta2 ~ eta5	NA
+eta3 ~ eta5	NA
+eta4 ~ eta5	NA
+eta6 ~ eta5	NA
+eta1 ~ eta6	NA
+eta2 ~ eta6	NA
+eta3 ~ eta6	NA
+eta4 ~ eta6	NA
+eta5 ~ eta6	NA
