@@ -41,7 +41,7 @@ result_dir_str <- model_key
 
 # Define and create results directory
 hyperparam_subdir <- paste(opt$maxiter, opt$popSize, opt$treeRows, sep = "_")
-results_dir <- file.path("..", "results_speed", hyperparam_subdir, result_dir_str)
+results_dir <- file.path("..", "results_table_speed", hyperparam_subdir, result_dir_str)
 model_subdir <- paste(opt$model, opt$modeDim, sep="_")
 subdir <- file.path(results_dir, model_subdir)
 dir.create(subdir, recursive = TRUE, showWarnings = FALSE)
@@ -69,6 +69,8 @@ run_ga <- function(seed) {
   best_individuals_all <<- list()
   best_individual <<- NULL
   best_fitness <<- -Inf
+  
+  set.seed(seed)
   
   # Generate and save the dataset
   dataset_generated <- generateData(

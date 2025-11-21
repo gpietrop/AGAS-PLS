@@ -9,7 +9,7 @@ models=("str4_small" "str4_med" "str4_high")
 dimensions=(100 250 500)
 pop=100
 ep=200
-end=10
+end=4
 
 # Run R scripts in parallel
 for model in "${models[@]}"; do
