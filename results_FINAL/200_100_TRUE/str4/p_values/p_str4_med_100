@@ -1,31 +1,31 @@
-Connection
-eta2 ~ eta1
-eta3 ~ eta1
-eta4 ~ eta1
-eta5 ~ eta1
-eta6 ~ eta1
-eta1 ~ eta2
-eta3 ~ eta2
-eta4 ~ eta2
-eta5 ~ eta2
-eta6 ~ eta2
-eta1 ~ eta3
-eta2 ~ eta3
-eta4 ~ eta3
-eta5 ~ eta3
-eta6 ~ eta3
-eta1 ~ eta4
-eta2 ~ eta4
-eta3 ~ eta4
-eta5 ~ eta4
-eta6 ~ eta4
-eta1 ~ eta5
-eta2 ~ eta5
-eta3 ~ eta5
-eta4 ~ eta5
-eta6 ~ eta5
-eta1 ~ eta6
-eta2 ~ eta6
-eta3 ~ eta6
-eta4 ~ eta6
-eta5 ~ eta6
+Connection	Run1	Run2	Run3	Run4	Run5	Run6	Run7	Run8	Run9	Run10	Run11
+eta2 ~ eta1	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta3 ~ eta1	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta4 ~ eta1	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta5 ~ eta1	0.0014	8e-04	NA	NA	0.0011	NA	NA	0	NA	NA	NA
+eta6 ~ eta1	0	0	0	0	0	0	0	0	0	0	0
+eta1 ~ eta2	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta3 ~ eta2	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta4 ~ eta2	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta5 ~ eta2	3e-04	7e-04	0.0021	NA	0	0.0214	1e-04	0	NA	NA	NA
+eta6 ~ eta2	0	0	0	0	0	0	0	0	0	0	0
+eta1 ~ eta3	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta2 ~ eta3	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta4 ~ eta3	NA	NA	NA	2e-04	NA	NA	NA	NA	NA	NA	NA
+eta5 ~ eta3	0.0098	NA	NA	NA	NA	NA	0.0103	0	NA	NA	NA
+eta6 ~ eta3	0	0	0	0	0	0	0	0	0	0	0
+eta1 ~ eta4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta2 ~ eta4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta3 ~ eta4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta5 ~ eta4	5e-04	NA	NA	NA	NA	NA	0	NA	NA	1e-04	NA
+eta6 ~ eta4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	0
+eta1 ~ eta5	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta2 ~ eta5	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta3 ~ eta5	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta4 ~ eta5	NA	NA	0	0.0105	3e-04	NA	NA	2e-04	0.0039	NA	0
+eta6 ~ eta5	NA	NA	NA	NA	NA	NA	NA	0	NA	NA	0
+eta1 ~ eta6	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta2 ~ eta6	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta3 ~ eta6	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+eta4 ~ eta6	0	0	0	0	0	0	0	0	0	0	NA
+eta5 ~ eta6	0	0	0	0	0	0	0	NA	0	0	NA
